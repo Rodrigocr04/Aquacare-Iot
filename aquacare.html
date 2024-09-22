@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+</style>
+</head>
+<body>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AQUACARE</title>
+<style type="text/css">
+    body{
+        background-color: #0077b6; 
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .data-container{
+        display: flex;
+        justify-content: space-between;
+        width: 80%; 
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #FFFFFF; 
+        box-shadow: 0 2px 20px rgba(0, 0, 0,0.1);
+        border-radius: 10px;
+        flex-wrap: wrap; /* Añadido para permitir que los elementos se envuelvan */
+    }
+    .data-box {
+        flex: 1; 
+        text-align: center;
+        padding: 20px;
+        border: 2px solid #0077b6; 
+        border-radius: 10px;
+        margin: 0 10px 20px; /* Espaciado entre elementos */
+    }
+    .data-box h2{
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #0077b6; 
+    }
+    .data-box p{
+        font-size: 48px;
+        font-weight: bold;
+        color: #6EB7FF; 
+    }
+    .data-head{
+        margin: auto;
+        width: 50%;
+        text-align: center;
+        font-size: 45px;
+        font-weight: bold;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #FFFFFF; 
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        color: #0077b6; 
+    }
+</style>
+</head>
+
+<body>
+    <div class="data-head">AQUACARE</div>
+    <div class="data-container">
+        <div class="data-box">
+            <h2>Temperatura ambiente</h2>
+            <p class="value" id="temperature">Loading...</p>
+        </div>
+        <div class="data-box">
+            <h2>Humedad ambiente</h2>
+            <p class="value" id="humidity">Loading...</p>
+        </div>
+        <div class="data-box">
+            <h2>Nivel de oscuridad</h2>
+            <p class="value" id="luz">Loading...</p>
+        </div>
+    </div>
+    <!-- Nuevo contenedor de datos para el segundo renglón -->
+    <div class="data-container">
+        <div class="data-box">
+            <h2>Distancia al agua</h2>
+            <p class="value" id="distance">Loading...</p>
+        </div>
+        <div class="data-box">
+            <h2>Temperatura del agua</h2>
+            <p class="value" id="temperatureC">Loading...</p>
+        </div>
+    </div>
+
+<!-- Sidebar (hidden by default) -->
+<nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left" style="display:none;z-index:2;width:40%;min-width:300px" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button">Close Menu</a>
+  <a href="#food" onclick="w3_close()" class="w3-bar-item w3-button">Food</a>
+  <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
+</nav>
+
+<!-- Top menu -->
+<div class="w3-top">
+  <div class="w3-white w3-xlarge" style="max-width:1200px;margin:auto">
+    <div class="w3-button w3-padding-16 w3-left" onclick="w3_open()">☰</div>
+  </div>
+</div>
+
+<!-- End page content -->
+</div>
+
+<script>
+// Script to open and close sidebar
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+ 
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+</body>
+</html>
+
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-analytics.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAA1OTjaQzhKp78IZ384ujijLevsQeGWbQ",
+        authDomain: "aquacare-638ce.firebaseapp.com",
+        databaseURL: "https://aquacare-638ce-default-rtdb.firebaseio.com",
+        projectId: "aquacare-638ce",
+        storageBucket: "aquacare-638ce.appspot.com",
+        messagingSenderId: "863424102404",
+        appId: "1:863424102404:web:ae55e7bab32017b42eb551",
+        measurementId: "G-S8EHER9ZXX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    firebase.initializeApp(firebaseConfig);
+
+    var database = firebase.database();
+    var dataRef1 = database.ref('DHT/temperature');
+    var dataRef2 = database.ref('DHT/humidity');
+    var dataRef3 = database.ref('luz');
+    var dataRef4 = database.ref('ultrasonic/distance');
+    var dataRef5 = database.ref('DS18B20/temperatureC');
+
+    dataRef1.on('value', function(getdata1){
+        var temp = getdata1.val();
+        document.getElementById('temperature').innerHTML = temp + " &#8451;";
+    });
+
+    dataRef2.on('value', function(getdata2){
+        var humi = getdata2.val();
+        document.getElementById('humidity').innerHTML = humi + "%";
+    });
+
+    dataRef3.on('value', function(getdata3){
+        var luz = getdata3.val();
+        document.getElementById('luz').innerHTML = luz + "%";
+    });
+
+    dataRef4.on('value', function(getdata4){
+        var distance = getdata4.val();
+        document.getElementById('distance').innerHTML = distance + " cm";
+    });
+
+    dataRef5.on('value', function(getdata5) {
+        var temperaturaAgua = getdata5.val();
+        document.getElementById('temperatureC').innerHTML = temperaturaAgua + " &#8451;";
+    });
+</script>
+</body>
+</html>
